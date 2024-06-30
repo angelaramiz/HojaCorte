@@ -38,9 +38,11 @@ async function iniciarCorte() {
     async function getValue(promptText, showDenyButton = false) {
         const result = await Swal.fire({
             title: promptText,
-            input: 'text',
+            input: 'number',
             inputAttributes: {
-                autocapitalize: 'off'
+                autocapitalize: 'off',
+                inputmode: 'decimal',
+                step: 'any'
             },
             showCancelButton: true,
             confirmButtonText: 'Aceptar',
@@ -53,7 +55,7 @@ async function iniciarCorte() {
             return 'done';
         }
 
-        return result.value;
+        return result.value ? parseFloat(result.value) : null;
     }
 
     // Asignar valores a los elementos de la columna "Cat" y calcular "Ttl"
@@ -78,7 +80,7 @@ async function iniciarCorte() {
     for (const total of totals) {
         const value = await getValue(total.promptText);
         if (value !== null && value !== 'done') {
-            document.getElementById(total.id).textContent = value;
+            document.getElementById(total.id).textContent = value.toFixed(2);
         }
     }
 
@@ -90,8 +92,8 @@ async function iniciarCorte() {
             break;
         }
         if (value !== null) {
-            document.getElementById(gasto.id).textContent = value;
-            totalGastosVales += parseFloat(value) || 0;
+            document.getElementById(gasto.id).textContent = value.toFixed(2);
+            totalGastosVales += value;
         }
     }
     document.getElementById('row-8-col-5').textContent = totalGastosVales.toFixed(2);
