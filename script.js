@@ -48,11 +48,17 @@ async function iniciarCorte() {
             confirmButtonText: 'Aceptar',
             cancelButtonText: 'Cancelar',
             showDenyButton: showDenyButton,
-            denyButtonText: 'Listo'
+            denyButtonText: 'Listo',
+            allowOutsideClick: true,
+            allowEscapeKey: true
         });
 
         if (result.isDenied) {
             return 'done';
+        }
+
+        if (result.dismiss === Swal.DismissReason.cancel || result.dismiss === Swal.DismissReason.backdrop || result.dismiss === Swal.DismissReason.esc) {
+            return 'cancel';
         }
 
         return result.value ? parseFloat(result.value) : null;
@@ -61,6 +67,9 @@ async function iniciarCorte() {
     // Asignar valores a los elementos de la columna "Cat" y calcular "Ttl"
     for (const element of elements) {
         const value = await getValue(element.promptText);
+        if (value === 'cancel') {
+            return;
+        }
         if (value !== null && value !== 'done') {
             document.getElementById(element.id).textContent = value;
             if (element.multiplier) {
@@ -79,6 +88,9 @@ async function iniciarCorte() {
     // Asignar valores a los elementos de totales
     for (const total of totals) {
         const value = await getValue(total.promptText);
+        if (value === 'cancel') {
+            return;
+        }
         if (value !== null && value !== 'done') {
             document.getElementById(total.id).textContent = value.toFixed(2);
         }
@@ -88,7 +100,7 @@ async function iniciarCorte() {
     var totalGastosVales = 0;
     for (const gasto of gastos) {
         const value = await getValue(gasto.promptText, true);
-        if (value === 'done') {
+        if (value === 'done' || value === 'cancel') {
             break;
         }
         if (value !== null) {
