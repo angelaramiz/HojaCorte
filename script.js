@@ -68,7 +68,7 @@ async function iniciarCorte() {
     for (const element of elements) {
         const value = await getValue(element.promptText);
         if (value === 'cancel') {
-            return;
+            return; // Detener el proceso si se cancela
         }
         if (value !== null && value !== 'done') {
             document.getElementById(element.id).textContent = value;
@@ -89,7 +89,7 @@ async function iniciarCorte() {
     for (const total of totals) {
         const value = await getValue(total.promptText);
         if (value === 'cancel') {
-            return;
+            return; // Detener el proceso si se cancela
         }
         if (value !== null && value !== 'done') {
             document.getElementById(total.id).textContent = value.toFixed(2);
@@ -101,7 +101,7 @@ async function iniciarCorte() {
     for (const gasto of gastos) {
         const value = await getValue(gasto.promptText, true);
         if (value === 'done' || value === 'cancel') {
-            break;
+            break; // Detener el proceso si se selecciona 'done' o se cancela
         }
         if (value !== null) {
             document.getElementById(gasto.id).textContent = value.toFixed(2);
