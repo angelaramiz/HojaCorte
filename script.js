@@ -49,8 +49,9 @@ async function iniciarCorte() {
             cancelButtonText: 'Cancelar',
             showDenyButton: showDenyButton,
             denyButtonText: 'Listo',
-            allowOutsideClick: true,
-            allowEscapeKey: true
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            html: `<button class="swal2-close" style="position: absolute; top: 0; right: 0; background: none; border: none; font-size: 1.5em; cursor: pointer;">&times;</button>`
         });
 
         if (result.isDenied) {
@@ -64,9 +65,20 @@ async function iniciarCorte() {
         return result.value ? parseFloat(result.value) : null;
     }
 
+    // Agregar evento para cerrar el prompt cuando se hace clic en la "X"
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('swal2-close')) {
+            Swal.close();
+            event.target.closest('.swal2-container').__cancelled = true;
+        }
+    });
+
     // Asignar valores a los elementos de la columna "Cat" y calcular "Ttl"
     for (const element of elements) {
         const value = await getValue(element.promptText);
+        if (document.querySelector('.swal2-container').__cancelled) {
+            return; // Detener el proceso si se cancela
+        }
         if (value === 'cancel') {
             return; // Detener el proceso si se cancela
         }
@@ -88,6 +100,9 @@ async function iniciarCorte() {
     // Asignar valores a los elementos de totales
     for (const total of totals) {
         const value = await getValue(total.promptText);
+        if (document.querySelector('.swal2-container').__cancelled) {
+            return; // Detener el proceso si se cancela
+        }
         if (value === 'cancel') {
             return; // Detener el proceso si se cancela
         }
@@ -100,6 +115,9 @@ async function iniciarCorte() {
     var totalGastosVales = 0;
     for (const gasto of gastos) {
         const value = await getValue(gasto.promptText, true);
+        if (document.querySelector('.swal2-container').__cancelled) {
+            return; // Detener el proceso si se cancela
+        }
         if (value === 'done' || value === 'cancel') {
             break; // Detener el proceso si se selecciona 'done' o se cancela
         }
