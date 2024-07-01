@@ -1,5 +1,4 @@
 async function iniciarCorte() {
-    // ID de los elementos de la columna "Cat"
     var elements = [
         { id: 'row-4-col-2', promptText: 'Ingrese el valor para ¢50, Cat', multiplier: 0.5 },
         { id: 'row-5-col-2', promptText: 'Ingrese el valor para $1, Cat', multiplier: 1 },
@@ -14,18 +13,16 @@ async function iniciarCorte() {
         { id: 'row-15-col-2', promptText: 'Ingrese el valor para $1,000, Cat', multiplier: 1000 }
     ];
 
-    // ID de los elementos de los totales
     var totals = [
         { id: 'row-3-col-3', promptText: 'Ingrese el valor para T.Débito' },
         { id: 'row-5-col-4', promptText: 'Ingrese el valor para T.Crédito' },
         { id: 'row-7-col-4', promptText: 'Ingrese el valor para T.Amex' }
     ];
 
-    // Variables para acumular totales
     var totalMonedas = 0;
     var totalBilletes = 0;
+    var primerDatoIngresado = false;
 
-    // Función para mostrar prompt con SweetAlert2
     async function getValue(promptText, showDenyButton = false) {
         const result = await Swal.fire({
             title: promptText,
@@ -56,7 +53,6 @@ async function iniciarCorte() {
         return result.value ? parseFloat(result.value) : null;
     }
 
-    // Agregar evento para cerrar el prompt cuando se hace clic en la "X"
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('swal2-close')) {
             Swal.close();
@@ -64,14 +60,13 @@ async function iniciarCorte() {
         }
     });
 
-    // Asignar valores a los elementos de la columna "Cat" y calcular "Ttl"
     for (const element of elements) {
         const value = await getValue(element.promptText);
         if (document.querySelector('.swal2-container').__cancelled) {
-            return; // Detener el proceso si se cancela
+            return;
         }
         if (value === 'cancel') {
-            return; // Detener el proceso si se cancela
+            return;
         }
         if (value !== null && value !== 'done') {
             document.getElementById(element.id).textContent = value;
@@ -85,24 +80,30 @@ async function iniciarCorte() {
                     totalBilletes += ttlValue;
                 }
             }
+            if (!primerDatoIngresado) {
+                primerDatoIngresado = true;
+                document.getElementById('limpiarTablaBtn').disabled = false; // Habilitar botón "Limpiar Tabla"
+            }
         }
     }
 
-    // Asignar valores a los elementos de totales
     for (const total of totals) {
         const value = await getValue(total.promptText);
         if (document.querySelector('.swal2-container').__cancelled) {
-            return; // Detener el proceso si se cancela
+            return;
         }
         if (value === 'cancel') {
-            return; // Detener el proceso si se cancela
+            return;
         }
         if (value !== null && value !== 'done') {
             document.getElementById(total.id).textContent = value.toFixed(2);
+            if (!primerDatoIngresado) {
+                primerDatoIngresado = true;
+                document.getElementById('limpiarTablaBtn').disabled = false; // Habilitar botón "Limpiar Tabla"
+            }
         }
     }
 
-    // Asignar valores a los elementos de Gastos y sumar en row-8 col-5
     var totalGastosVales = 0;
     const gastosResult = await getGastoValue('Ingrese los gastos', 'row-9-col-4');
     if (gastosResult) {
@@ -112,35 +113,29 @@ async function iniciarCorte() {
     }
     document.getElementById('row-8-col-5').textContent = totalGastosVales.toFixed(2);
 
-    // Asignar totales de monedas y billetes
     document.getElementById('row-2-col-3').textContent = totalMonedas.toFixed(2);
     document.getElementById('row-9-col-3').textContent = totalBilletes.toFixed(2);
 
-    // Calcular y asignar T.Efectivo,s/F
     var fondo = parseFloat(document.getElementById('row-15-col-4').textContent) || 0;
     var tEfectivoSF = totalMonedas + totalBilletes + totalGastosVales - fondo;
     document.getElementById('row-17-col-1').textContent = tEfectivoSF.toFixed(2);
 
-    // Calcular y asignar T.Efectivo,c/F
     var tEfectivoCF = totalMonedas + totalBilletes + totalGastosVales;
     document.getElementById('row-19-col-1').textContent = tEfectivoCF.toFixed(2);
 
-    // Calcular y asignar T.Tarjetas
     var tDebito = parseFloat(document.getElementById('row-3-col-3').textContent) || 0;
     var tCredito = parseFloat(document.getElementById('row-5-col-4').textContent) || 0;
     var tAmex = parseFloat(document.getElementById('row-7-col-4').textContent) || 0;
     var tTarjetas = tDebito + tCredito + tAmex;
     document.getElementById('row-17-col-4').textContent = tTarjetas.toFixed(2);
 
-    // Calcular y asignar T.Final
     var tFinal = tEfectivoCF + tTarjetas;
     document.getElementById('row-19-col-4').textContent = tFinal.toFixed(2);
 
-    // Habilitar el botón "Sugerir Fondo"
     document.getElementById('sugerirFondoBtn').disabled = false;
-    // Habilitar el botón "Limpiar Tabla"
     document.getElementById('limpiarTablaBtn').disabled = false;  
 }
+
 function limpiarTabla() {
     const idsToClear = [
         'row-2-col-3', 'row-3-col-3', 'row-4-col-2', 'row-4-col-3', 'row-5-col-2', 'row-5-col-3', 
