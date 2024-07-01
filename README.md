@@ -31,8 +31,8 @@ El proyecto consta de los siguientes archivos principales:
 ## Uso
 
 1. **Iniciar Corte**: Haz clic en el botón "Iniciar Corte" para comenzar a ingresar los valores de las monedas y billetes.
-
 2. **Sugerir Fondo**: Después de ingresar los valores, haz clic en "Sugerir Fondo" para obtener una sugerencia de fondo basada en los valores ingresados.
+3. **Limpiar Tabla**: Haz clic en el botón "Limpiar Tabla" para borrar todos los valores ingresados en la tabla.
 
 ## Dependencias
 
