@@ -138,6 +138,27 @@ async function iniciarCorte() {
 
     // Habilitar el botón "Sugerir Fondo"
     document.getElementById('sugerirFondoBtn').disabled = false;
+    // Habilitar el botón "Limpiar Tabla"
+    document.getElementById('limpiarTablaBtn').disabled = false;  
+}
+function limpiarTabla() {
+    const idsToClear = [
+        'row-2-col-3', 'row-3-col-3', 'row-4-col-2', 'row-4-col-3', 'row-5-col-2', 'row-5-col-3', 
+        'row-5-col-4', 'row-6-col-2', 'row-6-col-3', 'row-7-col-2', 'row-7-col-3', 'row-7-col-4', 
+        'row-8-col-2', 'row-8-col-3', 'row-8-col-5', 'row-9-col-3', 'row-9-col-4', 'row-10-col-2', 
+        'row-10-col-3', 'row-10-col-4', 'row-11-col-2', 'row-11-col-3', 'row-11-col-4', 'row-12-col-2', 
+        'row-12-col-3', 'row-12-col-4', 'row-13-col-2', 'row-13-col-3', 'row-13-col-4', 'row-14-col-2', 
+        'row-14-col-3', 'row-15-col-2', 'row-15-col-3', 'row-17-col-1', 'row-17-col-4', 'row-19-col-1', 
+        'row-19-col-4'
+    ];
+
+    idsToClear.forEach(id => {
+        document.getElementById(id).textContent = '';
+    });
+
+    document.getElementById('sugerirFondoBtn').disabled = true;
+    // Deshabilitar el botón Limpiar Tabla
+    document.getElementById('limpiarTablaBtn').disabled = true;  
 }
 
 // Función para mostrar formulario de gastos con SweetAlert2
