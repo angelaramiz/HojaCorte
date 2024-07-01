@@ -1,4 +1,4 @@
-# Tabla de Registro de Caja
+# Tabla de Registro de Corte de Caja
 
 Este proyecto proporciona una interfaz para la gestión de la caja registradora, incluyendo el ingreso y procesamiento de valores de monedas y billetes, así como la sugerencia de un fondo basado en los valores ingresados.
 
