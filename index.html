@@ -38,6 +38,14 @@
             text-align: center;
             margin-top: 20px;
         }
+        .swal2-styled {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .swal2-styled:focus {
+            box-shadow: 0 0 3px 2px rgba(0, 123, 255, 0.5);
+        }
         
         .switch {
             position: relative;
@@ -206,9 +214,9 @@
         </tr>
     </table>
     <div class="button-container">
-        <button onclick="iniciarCorte()">Iniciar Corte</button>
-        <button id="sugerirFondoBtn" onclick="sugerirFondo()" disabled>Sugerir Fondo</button>
-        <button id="limpiarTablaBtn" onclick="limpiarTabla()" disabled>Limpiar Tabla</button>
+        <button class="swal2-styled" onclick="iniciarCorte()">Iniciar Corte</button>
+        <button class="swal2-styled" id="sugerirFondoBtn" onclick="sugerirFondo()" disabled>Sugerir Fondo</button>
+        <button class="swal2-styled" id="limpiarTablaBtn" onclick="limpiarTabla()" disabled>Limpiar Tabla</button>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script.js"></script>
