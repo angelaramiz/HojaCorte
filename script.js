@@ -1,6 +1,32 @@
 async function iniciarCorte() {
     let currentStep = 0;
 
+    // Función para calcular los totales
+    function calcularTotales() {
+        let totalMonedas = 0;
+        let totalBilletes = 0;
+
+        // Calcular total de monedas
+        for (let i = 4; i <= 8; i++) {
+            const cantidad = parseFloat(document.getElementById(`row-${i}-col-2`).textContent) || 0;
+            const valor = [0.5, 1, 2, 5, 10][i - 4];
+            totalMonedas += cantidad * valor;
+        }
+
+        // Calcular total de billetes
+        for (let i = 10; i <= 15; i++) {
+            const cantidad = parseFloat(document.getElementById(`row-${i}-col-2`).textContent) || 0;
+            const valor = [20, 50, 100, 200, 500, 1000][i - 10];
+            totalBilletes += cantidad * valor;
+        }
+
+        // Actualizar los totales en la tabla
+        document.getElementById('row-2-col-3').textContent = totalMonedas.toFixed(2);
+        document.getElementById('row-9-col-3').textContent = totalBilletes.toFixed(2);
+
+        return { totalMonedas, totalBilletes };
+    }
+
     // Verificar si hay datos guardados en localStorage
     if (localStorage.getItem('corteInProgress')) {
         const { isConfirmed } = await Swal.fire({
@@ -19,6 +45,9 @@ async function iniciarCorte() {
                 document.getElementById(key).textContent = value;
             }
             currentStep = savedData.currentStep;
+
+            // Calcular los totales después de cargar los datos
+            calcularTotales();
         } else {
             // Limpiar datos guardados si el usuario decide no continuar
             localStorage.removeItem('corteInProgress');
@@ -55,13 +84,6 @@ async function iniciarCorte() {
 
         return result.value ? parseFloat(result.value) : null;
     }
-
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('swal2-close')) {
-            Swal.close();
-            event.target.closest('.swal2-container').__cancelled = true;
-        }
-    });
 
     const saveDataToLocalStorage = () => {
         const dataToSave = {
@@ -116,8 +138,6 @@ async function iniciarCorte() {
         { id: 'row-7-col-4', promptText: 'Ingrese el valor para T.Amex' }
     ];
 
-    var totalMonedas = 0;
-    var totalBilletes = 0;
     var primerDatoIngresado = false;
 
     for (; currentStep < elements.length; currentStep++) {
@@ -137,11 +157,6 @@ async function iniciarCorte() {
                 const ttlValue = value * element.multiplier;
                 const ttlId = element.id.replace('col-2', 'col-3');
                 document.getElementById(ttlId).textContent = ttlValue.toFixed(2);
-                if (element.id >= 'row-4-col-2' && element.id <= 'row-8-col-2') {
-                    totalMonedas += ttlValue;
-                } else if (element.id >= 'row-10-col-2' && element.id <= 'row-15-col-2') {
-                    totalBilletes += ttlValue;
-                }
             }
             if (!primerDatoIngresado) {
                 primerDatoIngresado = true;
@@ -170,6 +185,9 @@ async function iniciarCorte() {
         }
     }
 
+    // Calcular los totales finales
+    const { totalMonedas, totalBilletes } = calcularTotales();
+
     var totalGastosVales = 0;
     const gastosResult = await getGastoValue('Ingrese los gastos', 'row-9-col-4');
     if (gastosResult) {
@@ -181,9 +199,6 @@ async function iniciarCorte() {
 
     // Guardar datos en localStorage
     saveDataToLocalStorage();
-
-    document.getElementById('row-2-col-3').textContent = totalMonedas.toFixed(2);
-    document.getElementById('row-9-col-3').textContent = totalBilletes.toFixed(2);
 
     var fondo = parseFloat(document.getElementById('row-15-col-4').textContent) || 0;
     var tEfectivoSF = totalMonedas + totalBilletes + totalGastosVales - fondo;
@@ -210,6 +225,7 @@ async function iniciarCorte() {
     // Limpiar datos guardados en localStorage al finalizar correctamente
     localStorage.removeItem('corteInProgress');
 }
+
 // Continuación de las demás funciones...
 function limpiarTabla() {
     const idsToClear = [
