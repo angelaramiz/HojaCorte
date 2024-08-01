@@ -1426,5 +1426,3 @@ function actualizarTotal() {
     const total = calcularTotal({ monedas, billetes });
     document.getElementById('total').textContent = total.toFixed(2);
 }
-
-
